@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>WebSocket</title>
+  <!--  import tailwind css  -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  <h1 class="w-full text-center font-sans">WebSocket Chat Demo</h1>
+  <div class="container mx-auto">
+    <label>
+      <input type="text" id="name" placeholder="Your name" class="h-8" />
+    </label>
+    <button id="login" class="
+          rounded-lg
+          bg-cyan-500
+          shadow-sm
+          w-24 h-8
+          text-white
+          font-semibold
+          ml-2
+        ">
+      login
+    </button>
+  </div>
+  <div class="container mx-auto mt-10">
+    <label for="subscription">
+      <input type="text" id="subscription" placeholder="Subscribe to channel" class="shadow-lg h-8" />
+    </label>
+    <button id="btn_sub"
+      class="rounded-lg bg-cyan-500 shadow-sm w-24 h-8 text-white font-semibold ml-2">Subscription</button>
+  </div>
+
+  <div class="container mx-auto mt-10">
+    <label for="input_message">
+      <input type="text" id="input_message" placeholder="input send message" class="h-8" /></label>
+    <button id="btn_send" class="
+            rounded-lg
+            bg-cyan-500
+            shadow-sm
+            w-24 h-8
+            text-white
+            font-semibold
+            ml-2
+          ">
+      Send
+    </button>
+  </div>
+
+  <div class="container mx-auto m-10">
+    <table class="table-auto border-collapse w-full text-left">
+      <thead>
+        <tr>
+          <th>topic</th>
+          <th>sequence</th>
+          <th>message</th>
+        </tr>
+      </thead>
+      <tbody id="table_messages">
+
+      </tbody>
+    </table>
+  </div>
+
+
+  <script src="./index.js"></script>
+</body>
+
+</html>

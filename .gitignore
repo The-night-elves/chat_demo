@@ -1,0 +1,5 @@
+/target
+/Cargo.lock
+.idea
+
+/examples/ws_static/tailwind.config.js

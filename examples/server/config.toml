@@ -1,0 +1,10 @@
+
+[ws_config]
+addr= "0.0.0.0:8080"
+static_dir = "examples/ws_static"
+
+[grpc_config]
+addr = "0.0.0.0:8081"
+
+[quic_config]
+addr = "127.0.0.1:8433"

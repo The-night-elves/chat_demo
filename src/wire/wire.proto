@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package wire;
+
+service ChatService {
+  rpc SendMessage(stream ClientMessage) returns (stream ServerMessage) {};
+}
+
+
+message ClientMessage {
+  // 消息路由的主题，可以是p2p或room
+  string topic = 1;
+  oneof message {
+    JoinRoom join_room = 2;
+    LeaveRoom leave_room = 3;
+    JoinUser join_user = 4;
+    LeaveUser leave_user = 5;
+    string send_message = 6;
+    CreateRoom create_room = 7;
+    Login login = 8;
+  }
+}
+
+message JoinRoom {}
+message LeaveRoom {}
+message JoinUser {}
+message LeaveUser {}
+message CreateRoom {}
+
+message Login {
+  string name = 1;
+}
+
+message ServerMessage {
+  uint64 sequence = 1;
+  string topic = 2;
+  optional string message = 3;
+}
