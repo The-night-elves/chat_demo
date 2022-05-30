@@ -20,13 +20,13 @@ async fn main() -> anyhow::Result<()> {
 
     info!("load config {:?}", config);
 
-    let store = SessionStore::new();
-    let topic_store = TopicStore::new();
+    let store = Arc::new(SessionStore::new());
+    let topic_store = Arc::new(TopicStore::new());
 
     let router = Router::new()
         .route("/ws", get(protocol::ws_handler))
-        .layer(Extension(Arc::new(store)))
-        .layer(Extension(Arc::new(topic_store)))
+        .layer(Extension(store.clone()))
+        .layer(Extension(topic_store.clone()))
         .fallback(
             get_service(
                 ServeDir::new(&config.ws_config.static_dir).append_index_html_on_directories(true),
@@ -56,8 +56,9 @@ async fn main() -> anyhow::Result<()> {
     tokio::spawn(protocol::run(quic_addr));
 
     info!("grpc server start {grpc_addr}");
+    let server = protocol::ChatServer::new(store, topic_store);
     tonic::transport::Server::builder()
-        .add_service(ChatServiceServer::new(protocol::ChatServer))
+        .add_service(ChatServiceServer::new(server))
         .serve(grpc_addr)
         .await?;
     Ok(())

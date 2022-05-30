@@ -45,25 +45,28 @@ impl Session {
         mut input_stream: TokioReceiver<ClientMessage>,
     ) -> anyhow::Result<()> {
         while let Some(msg) = input_stream.recv().await {
-            match msg.message.unwrap() {
-                Message::JoinRoom(_) | Message::JoinUser(_) | Message::CreateRoom(_) => {
-                    if self.subscriptions.get(&msg.topic).is_none() {
-                        let receiver = self.topics.subscribe(self.user_name.clone(), &msg.topic);
-                        self.spawn(&msg.topic, receiver).await;
+            if let Some(message) = msg.message {
+                match message {
+                    Message::JoinRoom(_) | Message::JoinUser(_) | Message::CreateRoom(_) => {
+                        if self.subscriptions.get(&msg.topic).is_none() {
+                            let receiver =
+                                self.topics.subscribe(self.user_name.clone(), &msg.topic);
+                            self.spawn(&msg.topic, receiver).await;
+                        }
                     }
-                }
-                Message::LeaveRoom(_) | Message::LeaveUser(_) => {
-                    if let Some((_, sub)) = self.subscriptions.remove(&msg.topic) {
-                        sub.abort();
-                        self.topics.unsubscribe(self.user_name.clone(), &msg.topic);
+                    Message::LeaveRoom(_) | Message::LeaveUser(_) => {
+                        if let Some((_, sub)) = self.subscriptions.remove(&msg.topic) {
+                            sub.abort();
+                            self.topics.unsubscribe(self.user_name.clone(), &msg.topic);
+                        }
                     }
-                }
-                Message::SendMessage(data) => {
-                    if self.subscriptions.get(&msg.topic).is_some() {
-                        self.topics.send_message(&msg.topic, data)?;
+                    Message::SendMessage(data) => {
+                        if self.subscriptions.get(&msg.topic).is_some() {
+                            self.topics.send_message(&msg.topic, data)?;
+                        }
                     }
+                    Message::Login(data) => self.user_name = data.name,
                 }
-                Message::Login(data) => self.user_name = data.name,
             }
         }
         Ok(())
