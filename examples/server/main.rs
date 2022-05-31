@@ -53,7 +53,7 @@ async fn main() -> anyhow::Result<()> {
         Ok::<_, anyhow::Error>(())
     });
 
-    tokio::spawn(protocol::run(quic_addr));
+    tokio::spawn(protocol::run(quic_addr, store.clone(), topic_store.clone()));
 
     info!("grpc server start {grpc_addr}");
     let server = protocol::ChatServer::new(store, topic_store);
